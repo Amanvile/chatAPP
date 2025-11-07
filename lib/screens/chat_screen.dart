@@ -98,8 +98,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   Expanded(
                     child: TextField(
+
                       controller: messageTextController,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.black54),
                       onChanged: (value) {
                         messageText = value;
                       },
@@ -152,7 +153,7 @@ class MessageStream extends StatelessWidget {
 
           );
         }
-          final messages = snapshot.data?.docs;
+          final messages = snapshot.data?.docs.reversed;
           List<MessageBubble> messageBubbles=[];
           for (var message in messages!){
             final messageData = message.data() as Map<String, dynamic>;
@@ -165,6 +166,7 @@ class MessageStream extends StatelessWidget {
 
           }
           return ListView(
+            reverse: true,
             padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
             children: messageBubbles,
           );
