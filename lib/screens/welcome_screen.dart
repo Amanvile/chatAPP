@@ -1,49 +1,60 @@
+// In welcome_screen.dart
+import '../components/button.dart';
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
-import 'package:flash_chat/screens/registration_screen.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
-
+import 'registration_screen.dart';
+import 'TypeWriterLogoAnimated.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  static String id='welcome';
+  static String id = '/welcome';
+
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
-
-  late AnimationController controller;
-  late Animation animation;
+// Add 'with SingleTickerProviderStateMixin' to enable animation.
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with SingleTickerProviderStateMixin {
+  // 1. Define the controller and animation for the background.
+  late AnimationController _backgroundController;
+  late Animation<Color?> _backgroundColorAnimation;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    controller=AnimationController(
+
+    // 2. Initialize the controller and the color tween.
+    _backgroundController = AnimationController(
       duration: Duration(seconds: 1),
-      vsync: this
+      vsync: this,
     );
-    animation =ColorTween(begin: Colors.blueGrey,end: Colors.white).animate(controller);
-    controller.forward();
-    controller.addListener(() {
-      setState(() {
 
-      });
-      // print(controller.value);
+    _backgroundColorAnimation = ColorTween(
+      begin: Colors.grey[800], // Dark start color
+      end: Colors.white, // Light end color
+    ).animate(_backgroundController);
+
+    // 3. Start the animation.
+    _backgroundController.forward();
+
+    // 4. Add a listener to rebuild the screen on each animation frame.
+    _backgroundController.addListener(() {
+      setState(() {});
     });
-
   }
+
   @override
   void dispose() {
-    controller.dispose();
-    // TODO: implement dispose
+    // 5. IMPORTANT: Always dispose of controllers.
+    _backgroundController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  animation.value,
+      // 6. Use the animation value for the background color.
+      backgroundColor: _backgroundColorAnimation.value,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -59,59 +70,35 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                     height: 60.0,
                   ),
                 ),
-                AnimatedTextKit(
-                  animatedTexts: [TypewriterAnimatedText(
-                    'Flash Chat',
-                    textStyle: TextStyle(
-                      fontSize: 45.0,
-                      fontWeight: FontWeight.w900,
-                    ),
-                    speed: const Duration(milliseconds: 300),
-                  ),]
+                // Use the simplified TypeWriterLogoAnimated widget.
+                // It has no color animation properties.
+                TypeWriterLogoAnimated(
+                  text: 'Flash Chat',
+                  textStyle: TextStyle(
+                    fontSize: 45.0,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.black, // Set the final text color here.
+                  ),
                 ),
               ],
             ),
-            SizedBox(
-              height: 48.0,
+            SizedBox(height: 48.0),
+            // Your Button widgets remain correct.
+            Button(
+              label: 'Login',
+              color: Colors.lightBlueAccent,
+              id: LoginScreen.id,
+              onPressed: () {
+                Navigator.pushNamed(context, LoginScreen.id);
+              },
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                elevation: 5.0,
-                color: Colors.lightBlueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                child: MaterialButton(
-                  onPressed: () {
-                    // Route route = MaterialPageRoute(builder: (context) => LoginScreen());
-                    Navigator.pushNamed(context, LoginScreen.id);
-                    //Go to login screen.
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Log In',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                elevation: 5.0,
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, RegistrationScreen.id);
-                    //Go to registration screen.
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Register',
-                  ),
-                ),
-              ),
+            Button(
+              label: 'Register',
+              color: Colors.blueAccent,
+              id: RegistrationScreen.id,
+              onPressed: () {
+                Navigator.pushNamed(context, RegistrationScreen.id);
+              },
             ),
           ],
         ),
@@ -119,3 +106,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     );
   }
 }
+
+// **FIX FOR YOUR BUTTONFunction*
+
